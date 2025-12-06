@@ -2,97 +2,302 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>IPO Result · Neon Gauge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPO Result</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
 
     <style>
-        body {
+        :root {
+            --bg-dark: #05000c;
+            --panel: rgba(12, 0, 37, 0.96);
+            --neon-pink: #ff2fd6;
+            --neon-purple: #8a2cff;
+            --neon-cyan: #45f5ff;
+            --text-main: #fdf3ff;
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            background: #060B17;
-            font-family: 'Poppins', sans-serif;
-            color: white;
-            text-align: center;
+            box-sizing: border-box;
         }
 
-        .container {
-            margin-top: 120px;
-        }
-
-        .result-box {
-            background: rgba(10, 15, 30, 0.75);
-            backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 20px;
-            width: 400px;
-            margin: auto;
-            box-shadow: 0px 0px 30px rgba(0, 255, 200, 0.2);
-        }
-
-        .company {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .status {
-            font-size: 26px;
-            font-weight: 700;
-            color: #00FFC6;
-        }
-
-        /* Score Circle */
-        .score-circle {
-            margin: 30px auto;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background: conic-gradient(#00FFC6 calc(var(--p-score) * 1%), rgba(255,255,255,0.1) 0%);
+        body {
+            min-height: 100vh;
+            font-family: "Poppins", system-ui, sans-serif;
+            background:
+                radial-gradient(circle at 20% 0%, #32004f 0, transparent 45%),
+                radial-gradient(circle at 80% 100%, #3b005c 0, transparent 50%),
+                radial-gradient(circle at 50% 50%, #140020 0, #05000c 70%);
+            color: var(--text-main);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 38px;
+            padding: 24px;
+        }
+
+        .shell {
+            width: 100%;
+            max-width: 540px;
+            padding: 32px 26px 26px;
+            border-radius: 26px;
+            background: radial-gradient(circle at 0 0, rgba(255,47,214,0.16), transparent 55%),
+                        radial-gradient(circle at 100% 100%, rgba(69,245,255,0.16), transparent 60%),
+                        rgba(9, 0, 33, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 0 40px rgba(0,0,0,0.85);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shell::before {
+            content: "";
+            position: absolute;
+            inset: -50%;
+            background:
+                radial-gradient(circle at 0 0, rgba(255, 47, 214, 0.18), transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(69, 245, 255, 0.16), transparent 55%);
+            opacity: 0.4;
+            filter: blur(18px);
+            z-index: -1;
+        }
+
+        .kicker {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            color: var(--neon-cyan);
+            margin-bottom: 8px;
+        }
+
+        .headline {
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+
+        .headline span {
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #b9a6ff;
+            margin-bottom: 28px;
+        }
+
+        .gauge-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .gauge {
+            width: 230px;
+            height: 230px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 30% 0%, rgba(255, 255, 255, 0.05), transparent 50%),
+                radial-gradient(circle at 70% 100%, rgba(0, 0, 0, 0.6), transparent 60%),
+                #05000c;
+            box-shadow:
+                0 0 40px rgba(255, 47, 214, 0.6),
+                0 0 90px rgba(69, 245, 255, 0.4);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gauge-ring {
+            position: absolute;
+            inset: 16px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .gauge-ring::before {
+            content: "";
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 4px solid;
+            border-image: conic-gradient(
+                    from -90deg,
+                    #39ff14,
+                    #f5ff45,
+                    #ff9b2f,
+                    #ff2fd6,
+                    #8a2cff,
+                    #39ff14
+            ) 1;
+            opacity: 0.95;
+            filter: drop-shadow(0 0 18px rgba(255, 47, 214, 0.85));
+        }
+
+        .gauge-inner {
+            position: absolute;
+            inset: 38px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 0%, #26123f, #05000c);
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            color: #a48fd3;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .score-value {
+            font-size: 2.6rem;
             font-weight: 700;
-            color: white;
-            box-shadow: 0 0 25px #00FFC6;
         }
 
-        .back-btn {
-            display: inline-block;
-            margin-top: 25px;
-            padding: 12px 22px;
-            background: linear-gradient(90deg, #00FFC6, #00A8FF);
-            color: black;
-            border-radius: 8px;
-            font-size: 16px;
+        .score-scale {
+            font-size: 0.8rem;
+            color: #b9a6ff;
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            padding: 3px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            margin-top: 8px;
+        }
+
+        .tag-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #39ff14;
+            box-shadow: 0 0 14px rgba(57, 255, 20, 0.9);
+        }
+
+        .explanation {
+            font-size: 0.86rem;
+            color: #d9ccff;
+            margin-bottom: 22px;
+        }
+
+        .explanation strong {
+            color: var(--neon-pink);
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-primary,
+        .btn-ghost {
+            border-radius: 999px;
+            padding: 9px 20px;
+            font-size: 0.85rem;
             font-weight: 600;
-            text-decoration: none;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: none;
         }
 
-        .back-btn:hover {
-            opacity: 0.85;
+        .btn-primary {
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            color: #070010;
+            box-shadow: 0 0 20px rgba(255, 47, 214, 0.8);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #e2d5ff;
+            border: 1px solid rgba(226, 213, 255, 0.6);
+        }
+
+        .disclaimer {
+            font-size: 0.7rem;
+            color: #9e8bd6;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 520px) {
+            .shell {
+                padding: 22px 18px 20px;
+            }
+            .headline {
+                font-size: 1.5rem;
+            }
+            .gauge {
+                width: 200px;
+                height: 200px;
+            }
         }
     </style>
 </head>
-
 <body>
+<div class="shell">
+    <div class="kicker">ipo analyzer · neon gauge</div>
+    <h1 class="headline">
+        <span>{{ result }}</span> Probability
+    </h1>
+    <p class="subtitle">
+        This score is a <strong>0–10</strong> band based on the inputs you just fed into the engine.
+    </p>
 
-<div class="container">
-    <div class="result-box">
-
-        <div class="company">{{ company }}</div>
-
-        <div class="status">{{ result }}</div>
-
-        <!-- Jinja variable score stored in CSS variable -->
-        <div class="score-circle" style="--p-score: {{ score }};">
-            {{ score }}
+    <div class="gauge-wrapper">
+        <div class="gauge">
+            <div class="gauge-ring"></div>
+            <div class="gauge-inner">
+                <div class="score-label">overall score</div>
+                <div class="score-value">{{ score }}</div>
+                <div class="score-scale">out of 10</div>
+                <div class="tag-pill">
+                    <span class="tag-dot"></span>
+                    listing day focus
+                </div>
+            </div>
         </div>
-
-        <a class="back-btn" href="/">Run Again</a>
-
     </div>
-</div>
 
+    <p class="explanation">
+        <strong>{{ result }}</strong> means this IPO cleared most of the filters
+        in terms of profitability, leverage and demand.  
+        Still, treat this as a <strong>helper signal</strong>, not a guarantee.
+    </p>
+
+    <div class="btn-row">
+        <button class="btn-primary" onclick="window.location.href='/'">
+            Run Again
+        </button>
+        <button class="btn-ghost" onclick="history.back()">
+            Tweak Inputs
+        </button>
+    </div>
+
+    <p class="disclaimer">
+        No investment advice. Use with your own analysis, risk rules and position sizing.
+    </p>
+</div>
 </body>
 </html>
