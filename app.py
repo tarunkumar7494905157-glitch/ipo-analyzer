@@ -17,6 +17,3 @@ def predict():
         result = "Low Probability"
 
     return render_template("result.html", result=result, score=score)
-
-if __name__ == "__main__":
-    app.run()
