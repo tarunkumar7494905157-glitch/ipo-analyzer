@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPO Probability Analyzer</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            background: #060B17;
+            overflow-x: hidden;
+        }
+
+        /* Neon Blobs (Bull = Green, Bear = Pink) */
+        .blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            filter: blur(200px);
+            opacity: 0.45;
+            z-index: -2;
+            animation: float 18s infinite ease-in-out;
+        }
+
+        #bull {
+            background: radial-gradient(circle, #00ffcc, #0066ff);
+            top: 10%;
+            left: -10%;
+        }
+
+        #bear {
+            background: radial-gradient(circle, #ff4da6, #ff0033);
+            bottom: -10%;
+            right: -10%;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-40px); }
+        }
+
+        /* Page Title Section */
+        .hero {
+            padding: 90px 100px;
+            max-width: 700px;
+        }
+
+        .hero h1 {
+            font-size: 45px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .green {
+            color: #00FFCC;
+        }
+
+        .subtext {
+            font-size: 16px;
+            opacity: 0.8;
+            margin-top: 15px;
+            max-width: 550px;
+        }
+
+        /* Right Form Panel */
+        .form-box {
+            position: absolute;
+            top: 90px;
+            right: 100px;
+            width: 420px;
+            padding: 35px;
+            border-radius: 20px;
+            background: rgba(8, 12, 25, 0.85);
+            backdrop-filter: blur(20px);
+            box-shadow: 0px 0px 40px rgba(0, 255, 200, 0.12);
+        }
+
+        .form-box h2 {
+            margin-bottom: 20px;
+            font-size: 23px;
+            font-weight: 600;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px 13px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            background: #0D1326;
+            border: 1px solid #1F2A44;
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border: 1px solid #00ffc6;
+            box-shadow: 0px 0px 6px #00ffc6;
+        }
+
+        button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #00FFC6, #00A8FF);
+            color: #000;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Hologram Blobs -->
+    <div id="bull" class="blob"></div>
+    <div id="bear" class="blob"></div>
+
+    <div class="hero">
+        <h1>Know the <span class="green">IPO probability</span><br>before you apply.</h1>
+        <p class="subtext">
+            Enter basic IPO numbers and view a clean, probability-style score for financial strength, demand,
+            debt and promoter quality. This tool does not give direct investment advice.
+        </p>
+    </div>
+
+    <!-- Form Panel -->
+    <form class="form-box" method="POST" action="/predict">
+
+        <h2>Run IPO Probability Check</h2>
+
+        <label>Company Name</label>
+        <input type="text" name="company" placeholder="e.g. TCS Ltd" required>
+
+        <label>Sector</label>
+        <input type="text" name="sector" placeholder="e.g. IT, Banking, FMCG" required>
+
+        <label>Issue Size</label>
+        <input type="number" name="issue_size" placeholder="e.g. 1500" required>
+
+        <label>Price Band</label>
+        <input type="text" name="price_band" placeholder="e.g. 120–150" required>
+
+        <label>Revenue</label>
+        <input type="number" name="revenue" placeholder="e.g. 120" required>
+
+        <label>Profit</label>
+        <input type="number" name="profit" placeholder="e.g. 80" required>
+
+        <label>Total Assets</label>
+        <input type="number" name="assets" placeholder="e.g. 300" required>
+
+        <label>Total Liabilities</label>
+        <input type="number" name="liabilities" placeholder="e.g. 100" required>
+
+        <label>Debt Ratio</label>
+        <input type="number" step="0.01" name="debt_ratio" placeholder="e.g. 0.30" required>
+
+        <label>Subscription Demand</label>
+        <input type="number" name="demand" placeholder="e.g. 20" required>
+
+        <label>Promoter Holding (%)</label>
+        <input type="number" name="promoter_holding" placeholder="e.g. 65" required>
+
+        <button type="submit">Analyze IPO Probability</button>
+
+    </form>
+
+</body>
+</html>
