@@ -8,16 +8,34 @@ def home():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    score = int(request.form["score"])
+    try:
+        # Receive form data
+        revenue = float(request.form.get("revenue", 0))
+        profit = float(request.form.get("profit", 0))
+        assets = float(request.form.get("assets", 0))
+        liabilities = float(request.form.get("liabilities", 0))
+        debt_ratio = float(request.form.get("debt_ratio", 0))
+        demand = float(request.form.get("demand", 0))
 
-    if score >= 80:
-        result = "High Probability"
-    elif score >= 50:
-        result = "Medium Probability"
-    else:
-        result = "Low Probability"
+        # Simple scoring model
+        score = 0
+        score += revenue
+        score += profit * 2
+        score += (assets - liabilities)
+        score -= debt_ratio * 10
+        score += demand * 5
 
-    return render_template("result.html", result=result, score=score)
+        if score >= 200:
+            result = "High Probability"
+        elif score >= 100:
+            result = "Medium Probability"
+        else:
+            result = "Low Probability"
+
+        return render_template("result.html", result=result, score=int(score))
+
+    except Exception as e:
+        return f"Error: {str(e)}"
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=10000)
