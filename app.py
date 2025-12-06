@@ -9,6 +9,7 @@ def home():
 @app.route("/predict", methods=["POST"])
 def predict():
     score = int(request.form["score"])
+
     if score >= 80:
         result = "High Probability"
     elif score >= 50:
@@ -17,3 +18,6 @@ def predict():
         result = "Low Probability"
 
     return render_template("result.html", result=result, score=score)
+
+if __name__ == "__main__":
+    app.run()
