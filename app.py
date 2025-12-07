@@ -161,3 +161,14 @@ def robots():
 @app.route('/sitemap.xml')
 def sitemap():
     return send_from_directory(os.path.join(app.root_path), 'sitemap.xml')
+
+from flask import send_from_directory
+import os
+
+@app.route('/robots.txt')
+def robots():
+    return send_from_directory(os.path.join(app.root_path), 'robots.txt')
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory(os.path.join(app.root_path), 'sitemap.xml')
