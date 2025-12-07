@@ -110,3 +110,43 @@ def predict():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+from flask import Flask, Response
+
+app = Flask(__name__)   # Already hoga, बस confirm kar lo
+
+@app.route('/')
+def home():
+    return "Your homepage is working!"   # Yahan tumhara real homepage code hoga
+
+@app.route('/sitemap.xml')
+def sitemap():
+    sitemap_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://iposcore.in/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+"""
+    return Response(sitemap_xml, mimetype='application/xml')
+
+@app.route('/robots.txt')
+def robots():
+    robots_txt = """User-agent: *
+Allow: /
+
+Sitemap: https://iposcore.in/sitemap.xml
+"""
+    return Response(robots_txt, mimetype='text/plain')
+
+from flask import send_from_directory
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory('.', 'sitemap.xml')
+
+@app.route('/robots.txt')
+def robots():
+    return send_from_directory('.', 'robots.txt')
