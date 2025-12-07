@@ -2,13 +2,12 @@ from flask import Flask, render_template, request, send_from_directory
 
 app = Flask(__name__)
 
-# ------- Homepage -------
+# ---------- HOME ----------
 @app.route("/")
 def home():
     return render_template("index.html")
 
-
-# ------- Prediction Route -------
+# ---------- RESULTS ----------
 def to_float(name):
     raw = request.form.get(name, "").replace(",", "").strip()
     try:
@@ -26,7 +25,7 @@ def predict():
     demand_times = to_float("subscription_demand")
     sector = request.form.get("sector", "").lower()
 
-    # --- Profit Score ---
+    # Profit score
     if revenue > 0:
         profit_margin = (profit / revenue) * 100
     else:
@@ -41,7 +40,7 @@ def predict():
     else:
         profit_score = 0
 
-    # --- Demand Score ---
+    # Demand score
     if demand_times >= 20:
         demand_score = 2
     elif demand_times >= 10:
@@ -53,7 +52,7 @@ def predict():
     else:
         demand_score = 0
 
-    # --- Debt Score ---
+    # Debt score
     if debt_ratio_input <= 20:
         debt_score = 2
     elif debt_ratio_input <= 40:
@@ -63,7 +62,7 @@ def predict():
     else:
         debt_score = 0
 
-    # --- Asset Score ---
+    # Assets score
     net_assets = total_assets - total_liabilities
     if total_assets > 0:
         net_ratio = (net_assets / total_assets) * 100
@@ -74,12 +73,12 @@ def predict():
         asset_score = 2
     elif net_ratio >= 20:
         asset_score = 1.5
-    elif net_ratio >= 0:
+    elif net_ratio > 0:
         asset_score = 1
     else:
         asset_score = 0
 
-    # --- Sector Score ---
+    # Sector score
     if any(s in sector for s in ["it", "tech", "pharma"]):
         sector_score = 2
     elif any(s in sector for s in ["fmcg", "consumer"]):
@@ -87,11 +86,10 @@ def predict():
     elif any(s in sector for s in ["bank", "finance"]):
         sector_score = 1
     else:
-        sector_score = 0.5 if sector else 0
+        sector_score = 0.5
 
-    # --- Final Score ---
     raw_score = profit_score + demand_score + debt_score + asset_score + sector_score
-    score_10 = round(max(0, min(raw_score, 10)), 1)
+    score_10 = round(max(0, min(10, raw_score)), 1)
 
     if score_10 >= 7.5:
         result = "High Probability"
@@ -102,18 +100,16 @@ def predict():
 
     return render_template("result.html", result=result, score=score_10)
 
+# ---------- STATIC FILES ----------
 
-# ------- robots.txt -------
 @app.route("/robots.txt")
 def robots():
     return send_from_directory(".", "robots.txt", mimetype="text/plain")
 
-
-# ------- sitemap.xml -------
 @app.route("/sitemap.xml")
 def sitemap():
     return send_from_directory(".", "sitemap.xml", mimetype="application/xml")
 
-
+# ---------- RUN ----------
 if __name__ == "__main__":
     app.run()
