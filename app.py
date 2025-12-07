@@ -1,33 +1,56 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
+import os
 
 app = Flask(__name__)
 
-def to_float(name):
-    """Form se value leke float bana dega, galti par 0.0 dega"""
-    raw = request.form.get(name, "").replace(",", "").strip()
-    try:
-        return float(raw)
-    except ValueError:
-        return 0.0
-
+# ===========================================
+# HOME ROUTE
+# ===========================================
 @app.route("/")
 def home():
     return render_template("index.html")
 
+
+# ===========================================
+# ROBOTS.TXT ROUTE
+# ===========================================
+@app.route("/robots.txt")
+def robots():
+    return send_from_directory(".", "robots.txt", mimetype="text/plain")
+
+
+# ===========================================
+# SITEMAP.XML ROUTE
+# ===========================================
+@app.route("/sitemap.xml")
+def sitemap():
+    return send_from_directory(".", "sitemap.xml", mimetype="application/xml")
+
+
+# ===========================================
+# PREDICT ROUTE (Your IPO Logic)
+# ===========================================
+def to_float(name):
+    raw = request.form.get(name, "").replace(",", "").strip()
+    try:
+        return float(raw)
+    except:
+        return 0.0
+
 @app.route("/predict", methods=["POST"])
 def predict():
-    # ------- Raw inputs -------
-    revenue = to_float("revenue")                # e.g. 1200
-    profit = to_float("profit")                  # e.g. 150
-    total_assets = to_float("total_assets")      # e.g. 500
+
+    revenue = to_float("revenue")
+    profit = to_float("profit")
+    total_assets = to_float("total_assets")
     total_liabilities = to_float("total_liabilities")
-    debt_ratio_input = to_float("debt_ratio")    # e.g. 30 (percent)
-    demand_times = to_float("subscription_demand")  # e.g. 10 (10x)
+    debt_ratio_input = to_float("debt_ratio")
+    demand_times = to_float("subscription_demand")
     sector = request.form.get("sector", "").lower()
 
-    # ------- 1) Profit margin (0–2) -------
+    # ------- Profit Score -------
     if revenue > 0:
-        profit_margin = (profit / revenue) * 100   # %
+        profit_margin = (profit / revenue) * 100
     else:
         profit_margin = 0
 
@@ -40,8 +63,7 @@ def predict():
     else:
         profit_score = 0.0
 
-    # ------- 2) Demand score (0–2) -------
-    # demand_times = kitna x subscribe hua (1x, 5x, 15x...)
+    # ------- Demand Score -------
     if demand_times >= 20:
         demand_score = 2.0
     elif demand_times >= 10:
@@ -53,8 +75,7 @@ def predict():
     else:
         demand_score = 0.0
 
-    # ------- 3) Debt score (0–2) -------
-    # debt_ratio_input percent me: 20, 35, 60...
+    # ------- Debt Score -------
     if debt_ratio_input <= 20:
         debt_score = 2.0
     elif debt_ratio_input <= 40:
@@ -64,7 +85,7 @@ def predict():
     else:
         debt_score = 0.0
 
-    # ------- 4) Assets vs Liabilities (0–2) -------
+    # ------- Assets vs Liabilities -------
     net_assets = total_assets - total_liabilities
     if total_assets > 0:
         net_ratio = (net_assets / total_assets) * 100
@@ -75,12 +96,12 @@ def predict():
         asset_score = 2.0
     elif net_ratio >= 20:
         asset_score = 1.5
-    elif net_ratio > 0:
+    elif net_ratio >= 0:
         asset_score = 1.0
     else:
         asset_score = 0.0
 
-    # ------- 5) Sector strength (0–2) -------
+    # ------- Sector Score -------
     if any(s in sector for s in ["it", "tech", "pharma"]):
         sector_score = 2.0
     elif any(s in sector for s in ["fmcg", "consumer"]):
@@ -90,11 +111,11 @@ def predict():
     else:
         sector_score = 0.5 if sector else 0.0
 
-    # ------- Total 0–10 -------
+    # ------- Final Score -------
     raw_score = profit_score + demand_score + debt_score + asset_score + sector_score
-    score_10 = round(max(0.0, min(10.0, raw_score)), 1)   # clamp 0–10
+    score_10 = round(max(0.0, min(10.0, raw_score)), 1)
 
-    # ------- Label -------
+    # Result label
     if score_10 >= 7.5:
         result = "High Probability"
     elif score_10 >= 4.0:
@@ -102,94 +123,11 @@ def predict():
     else:
         result = "Low Probability"
 
-    return render_template(
-        "result.html",
-        result=result,
-        score=score_10
-    )
+    return render_template("result.html", result=result, score=score_10)
 
+
+# ===========================================
+# RUN APP
+# ===========================================
 if __name__ == "__main__":
     app.run(debug=True)
-
-from flask import Flask, Response
-
-app = Flask(__name__)   # Already hoga, बस confirm kar lo
-
-@app.route('/')
-def home():
-    return "Your homepage is working!"   # Yahan tumhara real homepage code hoga
-
-@app.route('/sitemap.xml')
-def sitemap():
-    sitemap_xml = """<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://iposcore.in/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>
-"""
-    return Response(sitemap_xml, mimetype='application/xml')
-
-@app.route('/robots.txt')
-def robots():
-    robots_txt = """User-agent: *
-Allow: /
-
-Sitemap: https://iposcore.in/sitemap.xml
-"""
-    return Response(robots_txt, mimetype='text/plain')
-
-from flask import send_from_directory
-
-@app.route('/sitemap.xml')
-def sitemap():
-    return send_from_directory('.', 'sitemap.xml')
-
-@app.route('/robots.txt')
-def robots():
-    return send_from_directory('.', 'robots.txt')
-
-from flask import send_from_directory
-import os
-
-@app.route('/robots.txt')
-def robots():
-    return send_from_directory(os.path.join(app.root_path), 'robots.txt')
-
-@app.route('/sitemap.xml')
-def sitemap():
-    return send_from_directory(os.path.join(app.root_path), 'sitemap.xml')
-
-from flask import send_from_directory
-import os
-
-@app.route('/robots.txt')
-def robots():
-    return send_from_directory(os.path.join(app.root_path), 'robots.txt')
-
-@app.route('/sitemap.xml')
-def sitemap():
-    return send_from_directory(os.path.join(app.root_path), 'sitemap.xml')
-
-from flask import Flask, render_template, send_from_directory
-
-app = Flask(__name__)
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-# ---- robots.txt ----
-@app.route("/robots.txt")
-def robots():
-    return send_from_directory(".", "robots.txt", mimetype="text/plain")
-
-# ---- sitemap.xml ----
-@app.route("/sitemap.xml")
-def sitemap():
-    return send_from_directory(".", "sitemap.xml", mimetype="application/xml")
-
-if __name__ == "__main__":
-    app.run()
