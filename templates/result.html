@@ -1,8 +1,271 @@
-<h1>IPO Probability Result</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>IPO Score Result</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<p>Final Score: <strong>{{ score }}</strong> / 10</p>
-<p>Category: <strong>{{ result }}</strong></p>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    />
 
-<p>(Raw score: {{ raw_score }} out of 20)</p>
+    <style>
+        :root {
+            --bg-main: #020617;
+            --accent: #4f46e5;
+            --accent-soft: #6366f1;
+            --accent-strong: #22c55e;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-subtle: #1f2933;
+        }
 
-<a href="/">Go back</a>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #111827, #020617 65%);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .shell {
+            max-width: 720px;
+            width: 100%;
+        }
+
+        .card {
+            background: radial-gradient(circle at top, #020617, #020617 65%);
+            border-radius: 20px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            padding: 20px 20px 18px;
+            box-shadow: 0 22px 60px rgba(15, 23, 42, 0.85);
+        }
+
+        .title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .score-circle-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .score-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 999px;
+            background: conic-gradient(
+                from 220deg,
+                #22c55e,
+                #4f46e5,
+                #a855f7,
+                #22c55e
+            );
+            padding: 3px;
+        }
+
+        .score-circle-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+            background: #020617;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-main {
+            font-size: 1.7rem;
+            font-weight: 700;
+        }
+
+        .score-denom {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .category {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .chip-high {
+            color: #bbf7d0;
+        }
+
+        .chip-med {
+            color: #facc15;
+        }
+
+        .chip-low {
+            color: #fecaca;
+        }
+
+        .raw-score {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .summary {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .summary strong {
+            color: #e5e7eb;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+            color: white;
+            border: none;
+            border-radius: 999px;
+            padding: 9px 18px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 18px 40px rgba(79, 70, 229, 0.5);
+        }
+
+        .btn-secondary {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            .score-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="card">
+            <h1 class="title">IPO Probability Result</h1>
+            <p class="subtitle">
+                Ye score sirf ek structured view deta hai. Final decision 
+                hammesha aapki risk profile, time horizon &amp; independent research pe depend karega.
+            </p>
+
+            <div class="score-grid">
+                <!-- LEFT: score -->
+                <div class="score-circle-wrap">
+                    <div class="score-circle">
+                        <div class="score-circle-inner">
+                            <div class="score-main">{{ score_10 }}</div>
+                            <div class="score-denom">out of 10</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="score-label">Probability band</div>
+                        <div class="category">
+                            {% if score_10 >= 7.5 %}
+                                <span class="chip-high">High Probability</span>
+                            {% elif score_10 >= 4.0 %}
+                                <span class="chip-med">Medium Probability</span>
+                            {% else %}
+                                <span class="chip-low">Low Probability</span>
+                            {% endif %}
+                        </div>
+                        <div class="raw-score">
+                            Raw model score: {{ raw_score }} out of 20
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: short interpretation -->
+                <div class="summary">
+                    {% if score_10 >= 7.5 %}
+                        <strong>High band:</strong> fundamentals + demand 
+                        dono strong lag rahe hain according to inputs. 
+                        Expensive valuation ya sector risk fir bhi manual 
+                        check karna zaroori hai.
+                    {% elif score_10 >= 4.0 %}
+                        <strong>Middle band:</strong> kuch cheezein strong hain, 
+                        kuch average. Ye zone “selective” IPOs ke liye 
+                        acha hai – detailed DRHP reading recommended.
+                    {% else %}
+                        <strong>Low band:</strong> model ke hisaab se risk 
+                        zyada aur upside limited lag rahi hai (given inputs). 
+                        Sirf aggressive risk-takers ke liye ya avoid zone.
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="/" class="btn-primary">
+                    <span>←</span>
+                    <span>Score another IPO</span>
+                </a>
+                <a href="#note" class="btn-secondary">Model assumptions &amp; disclaimer ↓</a>
+            </div>
+
+            <p id="note" class="summary" style="margin-top: 14px;">
+                <strong>Note:</strong> Score purely maths-based hai 
+                (10 inputs se). Promoter quality, regulatory risk, 
+                macro cycles, liquidity, taxation, etc. yahan model 
+                nahi kiye gaye. Treat this as a <strong>second opinion</strong>, 
+                not a signal.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
