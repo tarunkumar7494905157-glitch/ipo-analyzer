@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Page not found – IPOscore.in{% endblock %}
+{% block canonical_path %}/404{% endblock %}
+
+{% block content %}
+<div class="center-card">
+  <h1>404 – Page not found</h1>
+  <p style="font-size:13px; color:var(--text-muted);">
+    Jo URL tumne open kiya wo IPOscore.in ke current version me exist nahi karta.
+    Ho sakta hai slug change ho gaya ho ya page abhi build ho raha ho.
+  </p>
+  <div style="margin-top:16px;">
+    <a href="{{ url_for('home') }}" class="btn-ghost">← Back to analyzer</a>
+    <a href="{{ url_for('blog_list') }}" class="btn-ghost">Browse IPO guides →</a>
+  </div>
+</div>
+{% endblock %}
