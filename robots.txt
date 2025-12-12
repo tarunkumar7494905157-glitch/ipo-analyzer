@@ -1,6 +1,4 @@
 User-agent: *
-Disallow: /login
-Disallow: /dashboard
 Allow: /
 
 Sitemap: https://iposcore.in/sitemap.xml

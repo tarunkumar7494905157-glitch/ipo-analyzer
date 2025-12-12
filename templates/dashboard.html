@@ -1,24 +1,26 @@
 {% extends "base.html" %}
-{% block title %}Admin Dashboard | IPOscore{% endblock %}
+{% block title %}Admin Dashboard – IPOscore{% endblock %}
 {% block canonical_path %}/dashboard{% endblock %}
 
 {% block content %}
 <div class="center-card" style="max-width:700px;">
-    <h1>Admin dashboard (foundation)</h1>
-    <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
-        Abhi ye lightweight analytics placeholder hai.
-    </p>
+  <h1>Admin dashboard (foundation)</h1>
+  <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
+    Abhi ye lightweight analytics placeholder hai. Future me yahan:
+    real IPO run counts, high/medium/low distribution, top articles,
+    premium user stats, etc. integrate kar sakte ho.
+  </p>
 
-    <ul class="list-simple">
-        <li>Total IPO runs: {{ stats.total_ipo_runs }}</li>
-        <li>Average score:  {{ stats.avg_score }}</li>
-        <li>High zone scores: {{ stats.high_zone_count }}</li>
-        <li>Medium zone scores: {{ stats.medium_zone_count }}</li>
-        <li>Low zone scores: {{ stats.low_zone_count }}</li>
-    </ul>
+  <ul class="list-simple">
+    <li>Total IPO runs: {{ stats.total_ipo_runs }}</li>
+    <li>Average score: {{ stats.avg_score }}</li>
+    <li>High zone scores: {{ stats.high_zone_count }}</li>
+    <li>Medium zone scores: {{ stats.medium_zone_count }}</li>
+    <li>Low zone scores: {{ stats.low_zone_count }}</li>
+  </ul>
 
-    <div style="margin-top:18px;">
-        <a href="{{ url_for('home') }}" class="btn-ghost">← Back to analyzer</a>
-    </div>
+  <div style="margin-top:18px;">
+    <a href="{{ url_for('home') }}" class="btn-ghost">← Back to analyzer</a>
+  </div>
 </div>
 {% endblock %}

@@ -3,37 +3,16 @@
 {% block canonical_path %}/blog{% endblock %}
 
 {% block content %}
-<div class="blog-list-wrapper">
-    
-    <h1 class="blog-title">IPO Knowledge Hub</h1>
-    <p class="blog-subtext">Guides, playbooks & IPO deep insights</p>
+<div class="center-card" style="max-width:800px;">
+  <h1>IPO Knowledge Hub</h1>
+  <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">
+    Short guides aur playbooks jo IPO probability model ke around build kiye gaye hain.
+    Educational purpose only – no listing calls.
+  </p>
 
-    <div class="blog-grid">
-        {% for post in posts %}
-        <article class="blog-card">
-            
-            <span class="mini-pill">{{ post.category }}</span>
-
-            <h2 class="blog-card-title">
-                <a href="{{ url_for('blog_detail', slug=post.slug) }}">
-                    {{ post.title }}
-                </a>
-            </h2>
-
-            <p class="blog-excerpt">{{ post.excerpt }}</p>
-
-            <div class="blog-meta">
-                <span>{{ post.read_time }} min read</span>
-                <span>•</span>
-                <span>{{ post.created_at.strftime('%b %Y') }}</span>
-            </div>
-
-        </article>
-        {% endfor %}
-    </div>
-
-</div>
-
+  <ul class="list-simple">
+    {% for post in posts %}
+      <li>
         <a href="{{ url_for('blog_detail', slug=post.slug) }}" style="display:block; padding:10px 0; border-bottom:1px solid rgba(55,65,81,0.8);">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div>

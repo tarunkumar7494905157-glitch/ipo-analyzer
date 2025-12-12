@@ -5,50 +5,77 @@
 {% block title %}IPOscore.in – AI-style IPO Probability Analyzer (10-input model){% endblock %}
 
 {% block content %}
-<!-- ===== HERO SECTION ===== -->
-<section class="hero">
-    <div class="hero-inner">
-        <h1 class="hero-title">AI-style IPO Probability Analyzer</h1>
+<section class="layout-main" id="cta-start">
+  <!-- Left: Hero + explainer -->
+  <div class="panel">
+    <h1>
+      AI-style <span class="accent">IPO Probability</span><br />
+      Analyzer
+    </h1>
+    <p class="panel-subtitle">
+      10 key fundamentals + market sentiment ko combine karke ek
+      clean <strong>0–10 IPO probability score</strong> deta hai –
+      taaki har IPO ko objectively compare kar sako.
+    </p>
 
-        <p class="hero-sub">
-            10 key fundamentals + market sentiment ko combine karke ek 
-            <strong>0–10 IPO probability score</strong> deta hai – taaki har IPO ko objectively compare kar sako.
-        </p>
-
-        <div class="hero-cta">
-            <a href="#ipo-form" class="primary-btn">Start IPO Scoring</a>
-        </div>
-
-        <p class="hero-note">
-            Educational only • Structured thinking model • Not investment advice
-        </p>
+    <div class="pill-row">
+      <div class="pill"><strong>Risk-Reward balanced</strong> model</div>
+      <div class="pill">Scoring range: <strong>0–10</strong></div>
+      <div class="pill">Time to score: ~30 seconds</div>
     </div>
-</section>
- </div>
 
-   <!-- ====== QUICK FACTS (Premium Cards) ====== -->
-<section class="facts">
-    <div class="facts-row">
+    <p class="panel-subtitle">
+      Inputs cover: profitability, demand, leverage, valuation, grey market
+      sentiment, subscription data &amp; market tone. Output ek probability-style
+      score deta hai – <em>decision nahi, structured view</em>.
+    </p>
 
-        <div class="fact-box">
-            <h4>Score buckets</h4>
-            <p><strong>0–3</strong> Low • <strong>3–6</strong> Medium • <strong>6–10</strong> High</p>
-        </div>
-
-        <div class="fact-box">
-            <h4>Signals covered</h4>
-            <p>Profitability • Growth • Demand • Leverage • Valuation</p>
-        </div>
-
-        <div class="fact-box">
-            <h4>Use-case</h4>
-            <p>Idea filter • Checklist • Not listing prediction</p>
-        </div>
-
+    <div class="primary-cta-row">
+      <button class="btn-primary" onclick="document.getElementById('profit_margin').focus()">
+        <span class="icon">🚀</span>
+        <span>Start IPO scoring</span>
+      </button>
+      <div class="cta-caption">
+        No login required · Educational only · Last updated: {{ 2024 }}
+      </div>
     </div>
-</section>
 
+    <div class="quick-fact-grid">
+      <div class="fact-card">
+        <div class="fact-label">Score buckets</div>
+        <div class="fact-value">
+          0–3 Low · 3–6 Medium · 6–10 High
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-label">Signals covered</div>
+        <div class="fact-value">
+          Profitability · Growth · Demand · Leverage · Valuation
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-label">Use-case</div>
+        <div class="fact-value">
+          Idea filter &amp; checklist – not listing prediction.
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Right: Form -->
+  <div class="panel">
+    <div class="form-title-row">
+      <h2>Quick IPO check</h2>
+      <div class="form-meta">
+        <div>10 inputs · Score /10</div>
+        <div style="font-size: 10px;">Extreme numbers model ko distort kar sakte hain.</div>
+      </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('predict') }}">
+      <div class="input-grid">
+        <div class="field">
+          <label for="profit_margin">Profit Margin (%)</label>
           <input id="profit_margin" name="profit_margin" placeholder="Example: 18" />
           <small>Net profit ÷ revenue × 100</small>
         </div>
@@ -191,14 +218,4 @@
   </div>
 </section>
 {% endblock %}
-<body>
-
-    <div class="container">
-
-        <!-- YOUR ENTIRE PAGE CONTENT HERE -->
-        <!-- Headings, forms, dashboard, everything stays inside -->
-    
-    </div>
-
-</body>
 

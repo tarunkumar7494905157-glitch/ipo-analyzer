@@ -8,54 +8,10 @@ from flask import (
     abort,
     send_from_directory,
 )
-
-
 import os
 from datetime import datetime
 
 app = Flask(__name__)
-
-from flask_compress import Compress
-
-Compress(app)
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
-    is_admin = db.Column(db.Boolean, default=False)
-
-class Blog(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    slug = db.Column(db.String(200), unique=True, nullable=False)
-    category = db.Column(db.String(50))
-    content = db.Column(db.Text)
-    author = db.Column(db.String(50))
-    meta_title = db.Column(db.String(200))
-    meta_description = db.Column(db.String(300))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    views = db.Column(db.Integer, default=0)
-
-class SavedIPO(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
-    ipo_name = db.Column(db.String(150))
-    score = db.Column(db.Float)
-    saved_at = db.Column(db.DateTime, default=datetime.utcnow)
-
 
 # -------- Basic config --------
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-in-production")
@@ -308,6 +264,29 @@ def calculate_ipo_score(form_data):
 def is_logged_in():
     return session.get("logged_in") is True
 
+
+# -------- Routes --------
+
+
+@app.route("/")
+def home():
+    latest_posts = sorted(BLOG_POSTS, key=lambda p: p["created_at"], reverse=True)[:3]
+    return render_template("index.html", posts=latest_posts)
+
+
+@app.route("/predict", methods=["POST"])
+def predict():
+    score_10, raw_score, label, color = calculate_ipo_score(request.form)
+
+    return render_template(
+        "result.html",
+        score_10=score_10,
+        raw_score=raw_score,
+        label=label,
+        color=color,
+    )
+
+
 # ----- Blog -----
 @app.route("/blog")
 def blog_list():
@@ -321,28 +300,19 @@ def blog_detail(slug):
     return render_template("blog_detail.html", post=post)
 
 
-
-
-
 # ----- Auth + dashboard (foundation for premium) -----
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
-
     if request.method == "POST":
         username = request.form.get("username", "")
         password = request.form.get("password", "")
-
         if username == ADMIN_USER and password == ADMIN_PASS:
             session["logged_in"] = True
-            session["is_admin"] = True
-            session["username"] = username
             return redirect(url_for("dashboard"))
         else:
             error = "Invalid credentials"
-
     return render_template("login.html", error=error)
-
 
 
 @app.route("/logout")
@@ -350,14 +320,11 @@ def logout():
     session.clear()
     return redirect(url_for("home"))
 
-def admin_required(f):
-    def wrapper(*args, **kwargs):
-        if not session.get("is_admin"):
-            return redirect(url_for("login"))
-        return f(*args, **kwargs)
-    wrapper.__name__ = f.__name__
-    return wrapper
 
+@app.route("/dashboard")
+def dashboard():
+    if not is_logged_in():
+        return redirect(url_for("login"))
 
     # Simple placeholder stats – future me DB se real analytics laa sakta hai
     stats = {
@@ -389,48 +356,3 @@ def page_not_found(e):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-# ========== Admin Login System ==========
-
-from flask import flash
-
-@app.route("/admin/login", methods=["GET", "POST"])
-def admin_login():
-    if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
-
-        user = User.query.filter_by(email=email).first()
-
-        if user and check_password_hash(user.password, password) and user.is_admin:
-            session["admin_id"] = user.id
-            return redirect(url_for("admin_dashboard"))
-        else:
-            flash("Invalid credentials", "error")
-
-    return render_template("admin_login.html")
-
-
-@app.route("/admin/logout")
-def admin_logout():
-    session.pop("admin_id", None)
-    return redirect(url_for("admin_login"))
-
-
-# -------- Access protection decorator --------
-def admin_required(f):
-    def wrap(*args, **kwargs):
-        if "admin_id" not in session:
-            return redirect(url_for("admin_login"))
-        return f(*args, **kwargs)
-    wrap.__name__ = f.__name__
-    return wrap
-
-
-# -------- Dashboard Route --------
-@app.route("/admin/dashboard")
-@admin_required
-def admin_dashboard():
-    blogs = Blog.query.order_by(Blog.created_at.desc()).all()
-    return render_template("admin_dashboard.html", blogs=blogs)
-
