@@ -3,19 +3,62 @@
 {% block canonical_path %}/blog/{{ post.slug }}{% endblock %}
 
 {% block content %}
-<div class="center-card" style="max-width:800px;">
-  <div class="mini-pill">{{ post.category }}</div>
-  <h1 style="margin-top:10px;">{{ post.title }}</h1>
-  <div style="font-size:11px; color:var(--text-muted); margin-bottom:14px;">
-    {{ post.read_time }} min read • {{ post.created_at.strftime('%d %b %Y') }}
-  </div>
+<div class="blog-article-wrapper">
 
-  <article style="font-size:13px; color:var(--text-main); line-height:1.6;">
-    {{ post.content | safe }}
-  </article>
+    <span class="mini-pill">{{ post.category }}</span>
 
-  <div style="margin-top:18px;">
-    <a href="{{ url_for('blog_list') }}" class="btn-ghost">← Back to all articles</a>
-  </div>
+    <h1 class="article-title">{{ post.title }}</h1>
+
+    <div class="article-meta">
+        <span>{{ post.read_time }} min read</span>
+        <span>•</span>
+        <span>{{ post.created_at.strftime('%b %d, %Y') }}</span>
+    </div>
+
+    <article class="article-body">
+        {{ post.content | safe }}
+    </article>
+
+    <a href="{{ url_for('blog_list') }}" class="back-link">← Back to all articles</a>
+
 </div>
+
 {% endblock %}
+
+/* ===== BLOG DETAIL ===== */
+.blog-article-wrapper {
+    max-width: 800px;
+    margin: 50px auto;
+}
+
+.article-title {
+    font-size: 34px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.article-meta {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 22px;
+    display: flex;
+    gap: 6px;
+}
+
+.article-body {
+    font-size: 17px;
+    color: #333;
+    line-height: 1.7;
+    margin-bottom: 40px;
+}
+
+.back-link {
+    font-size: 15px;
+    color: #0056ff;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+

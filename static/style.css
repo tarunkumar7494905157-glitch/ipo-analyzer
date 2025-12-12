@@ -1,0 +1,108 @@
+/* ===== Global ===== */
+body {
+    font-family: Inter, sans-serif;
+    background: #fafbff;
+    color: #111;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container */
+.container {
+    width: 92%;
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* Hero Title */
+h1 {
+    font-size: 44px;
+    font-weight: 800;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+/* Hero Sub */
+.hero-sub {
+    font-size: 17px;
+    color: #444;
+    line-height: 1.55;
+}
+
+/* Start Button */
+.primary-btn {
+    background: #0057ff;
+    color: white;
+    padding: 13px 22px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+.primary-btn:hover {
+    background: #0044cc;
+}
+
+/* ===== Premium Card Layout ===== */
+.facts {
+    margin-top: 40px;
+}
+
+.facts-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+}
+
+.fact-box {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border: 1px solid #f1f1f1;
+}
+
+.fact-box h4 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+}
+
+.fact-box p {
+    color: #444;
+    font-size: 15px;
+}
+
+/* ===== Form Section ===== */
+form {
+    margin-top: 45px;
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 3px 16px rgba(0,0,0,0.06);
+    border: 1px solid #eee;
+}
+
+.field label {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.field input {
+    width: 100%;
+    padding: 14px;
+    margin-top: 6px;
+    margin-bottom: 22px;
+    border-radius: 10px;
+    border: 1px solid #dcdcdc;
+    background: #f9f9f9;
+    font-size: 15px;
+    transition: 0.15s;
+}
+.field input:focus {
+    border-color: #0057ff;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0,87,255,0.15);
+    outline: none;
+}
